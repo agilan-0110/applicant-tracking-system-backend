@@ -279,5 +279,5 @@ http://127.0.0.1:8000/redoc
 
 Artificial Intelligence and Data Science Student
 
-- GitHub: https://github.com/<agilan-0110>
-- LinkedIn: https://www.linkedin.com/in/<agilanthiyagarajan>
+- GitHub: https://github.com/agilan-0110
+- LinkedIn: https://www.linkedin.com/in/agilanthiyagarajan
