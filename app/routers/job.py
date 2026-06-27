@@ -97,7 +97,7 @@ def my_jobs(
     summary="Get Job",
     description="Retrieve a specific job using its ID."
 )
-def get_job(job_id : int,db:Session = Depends(get_db)):
+def get_job(job_id : int,db:Session = Depends(get_db),current_user: User = Depends(get_current_user)):
 
     job = db.query(Job).filter(Job.id == job_id).first()
 
