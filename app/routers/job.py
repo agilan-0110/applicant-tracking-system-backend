@@ -4,10 +4,10 @@ from app.models.application import Application
 from app.database import get_db
 from app.models.job import Job
 from app.models.user import User
-from app.schemas.job import JobCreate, JobResponse,JobUpdate
+from app.schemas.job import JobCreate, JobResponse,JobUpdate,RecruiterJobResponse
 from app.auth.oauth2 import get_current_user
 from sqlalchemy import func
-from app.schemas.job import RecruiterJobResponse
+
 
 router = APIRouter(
     prefix="/jobs",
