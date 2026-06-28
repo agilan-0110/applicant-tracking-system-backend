@@ -26,8 +26,7 @@ def register(
     hashed = hash_password(user.password)
 
     existing_user = db.query(User).filter(
-    User.email == user.email
-).first()
+        User.email == user.email).first()
 
     if existing_user:
         raise HTTPException(
