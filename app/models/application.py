@@ -9,7 +9,7 @@ class Application(base):
     id = Column(Integer, primary_key=True, index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id",ondelete="CASCADE"), nullable=False)
     job_id = Column(Integer, ForeignKey("jobs.id",ondelete="CASCADE"), nullable=False)
-    status = Column(String, default="applied")
+    status = Column(String, default="Applied")
     applied_at = Column(
         DateTime(timezone=True),
         server_default=func.now()

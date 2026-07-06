@@ -2,282 +2,220 @@
 
 ## Overview
 
-The Applicant Tracking System (ATS) Backend is a RESTful web application built using FastAPI and PostgreSQL. It provides a secure platform for recruiters to manage job postings and applications while enabling candidates to create professional profiles and apply for available positions.
+This project is a FastAPI backend for an Applicant Tracking System. It supports two roles:
 
-The project follows a modular architecture with role-based authentication using JWT tokens and demonstrates modern backend development practices with FastAPI, SQLAlchemy, and PostgreSQL.
+- Recruiters can create and manage jobs, view applicants, and update application status.
+- Candidates can create a profile, apply for jobs, and view their submitted applications.
 
----
+The API uses PostgreSQL, SQLAlchemy, Alembic migrations, JWT authentication, and role-based access control.
 
 ## Features
 
-### Authentication
-- User Registration
-- User Login
-- JWT Authentication
-- Password Hashing with Passlib
-- Role-Based Authorization (Recruiter & Candidate)
+- User registration and login
+- JWT authentication
+- Password hashing with Passlib bcrypt
+- Candidate profile CRUD
+- Recruiter job CRUD
+- Job applications with duplicate prevention
+- Applicant listing for job owners
+- Application status updates
+- Docker and Docker Compose support
+- Pytest test coverage for auth, candidates, jobs, applications, and root endpoint
 
-### Recruiter
-- Create Job Postings
-- View Posted Jobs
-- Update Job Details
-- Delete Job Postings
-- View Applicants for Each Job
-- Update Candidate Application Status
+## Tech Stack
 
-### Candidate
-- Create Candidate Profile
-- View Profile
-- Update Profile
-- Apply for Jobs
-- View Submitted Applications
-
-### Application Management
-- Prevent Duplicate Applications
-- Track Application Status
-- Recruiter Access Control
-- Candidate Access Control
-
----
-
-## Technology Stack
-
-| Category | Technology |
-|----------|------------|
-| Backend Framework | FastAPI |
+| Area | Technology |
+| --- | --- |
+| API | FastAPI |
 | Database | PostgreSQL |
 | ORM | SQLAlchemy |
-| Data Validation | Pydantic |
-| Authentication | JWT (JSON Web Tokens) |
-| Password Hashing | Passlib (bcrypt) |
-| API Testing | Swagger UI |
-| ASGI Server | Uvicorn |
-
----
+| Migrations | Alembic |
+| Validation | Pydantic |
+| Auth | JWT with python-jose |
+| Passwords | Passlib bcrypt |
+| Tests | Pytest, FastAPI TestClient |
+| Runtime | Uvicorn/Gunicorn |
 
 ## Project Structure
 
-```
+```text
 app/
-├── auth/
-│   ├── hashing.py
-│   ├── oauth2.py
-│   └── token.py
-│
-├── models/
-│   ├── application.py
-│   ├── candidate.py
-│   ├── job.py
-│   └── user.py
-│
-├── routers/
-│   ├── application.py
-│   ├── auth.py
-│   ├── candidate.py
-│   └── job.py
-│
-├── schemas/
-│   ├── application.py
-│   ├── candidate.py
-│   ├── job.py
-│   └── user.py
-│
-├── database.py
-└── main.py
+|-- auth/
+|   |-- __init__.py
+|   |-- hashing.py
+|   |-- oauth2.py
+|   `-- token.py
+|-- models/
+|   |-- __init__.py
+|   |-- application.py
+|   |-- candidate.py
+|   |-- job.py
+|   `-- user.py
+|-- routers/
+|   |-- __init__.py
+|   |-- application.py
+|   |-- auth.py
+|   |-- candidate.py
+|   `-- job.py
+|-- schemas/
+|   |-- __init__.py
+|   |-- application.py
+|   |-- candidate.py
+|   |-- job.py
+|   `-- user.py
+|-- __init__.py
+|-- config.py
+|-- database.py
+`-- main.py
+
+alembic/
+|-- versions/
+|-- env.py
+`-- script.py.mako
+
+tests/
+|-- conftest.py
+|-- test_applications.py
+|-- test_auth.py
+|-- test_crud_candidate.py
+|-- test_jobs.py
+`-- test_root.py
 ```
 
----
 
-## Database Design
 
-### Users
-Stores recruiter and candidate accounts.
+## Local Setup
 
-### Jobs
-Stores job postings created by recruiters.
+Create and activate a virtual environment:
 
-### Candidates
-Stores additional profile information for candidates.
+```powershell
+python -m venv venv
+.\venv\Scripts\activate
+```
 
-### Applications
-Stores job applications submitted by candidates.
+Install dependencies:
 
----
+```powershell
+pip install -r requirements.txt
+```
+
+Run migrations:
+
+```powershell
+alembic upgrade head
+```
+
+Start the API:
+
+```powershell
+uvicorn app.main:app --reload
+```
+
+The API runs at:
+
+```text
+http://127.0.0.1:8000
+```
+
+Interactive docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Docker Setup
+
+Start the API and PostgreSQL:
+
+```powershell
+docker compose up --build
+```
+
+The API container waits for PostgreSQL health checks before starting.
+
+## Running Tests
+
+Use the project virtual environment:
+
+```powershell
+.\venv\Scripts\python.exe -m pytest -q
+```
+
+Current suite coverage includes:
+
+- Authentication
+- Candidate profiles
+- Job management
+- Applications
+- Root health endpoint
 
 ## API Endpoints
 
-### Authentication
+### Auth
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/auth/register` | Register a new user |
-| POST | `/auth/login` | Login and obtain JWT token |
-
----
-
-### Jobs
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/jobs/` | Create a new job |
-| GET | `/jobs/my` | View recruiter's jobs |
-| GET | `/jobs/{job_id}` | Get job details |
-| PUT | `/jobs/{job_id}` | Update job |
-| DELETE | `/jobs/{job_id}` | Delete job |
-
----
+| --- | --- | --- |
+| POST | `/auth/register` | Register a candidate or recruiter |
+| POST | `/auth/login` | Login and receive a JWT |
 
 ### Candidate
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+| --- | --- | --- |
 | POST | `/candidate/profile` | Create candidate profile |
-| GET | `/candidate/profile` | View profile |
-| PUT | `/candidate/profile` | Update profile |
+| GET | `/candidate/profile` | View own profile |
+| PUT | `/candidate/profile` | Update own profile |
 
----
+### Jobs
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/jobs/` | Recruiter creates a job |
+| GET | `/jobs/my` | Recruiter views own jobs |
+| GET | `/jobs/{job_id}` | View a job |
+| PUT | `/jobs/{job_id}` | Recruiter updates own job |
+| DELETE | `/jobs/{job_id}` | Recruiter deletes own job |
 
 ### Applications
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/applications/{job_id}` | Apply for a job |
-| GET | `/applications/my` | View candidate applications |
-| GET | `/applications/job/{job_id}/applicants` | View applicants for a job |
-| PUT | `/applications/{application_id}/status` | Update application status |
-
----
+| --- | --- | --- |
+| POST | `/applications/{job_id}` | Candidate applies to a job |
+| GET | `/applications/my` | Candidate views own applications |
+| GET | `/applications/job/{job_id}/applicants` | Recruiter views applicants for own job |
+| PUT | `/applications/{application_id}/status` | Recruiter updates application status |
 
 ## Authentication
 
-Protected endpoints require a valid JWT access token.
+Protected endpoints require:
 
-Authorization Header:
-
-```
+```text
 Authorization: Bearer <access_token>
 ```
 
-Role-based authorization ensures that:
+Role rules:
 
-- Recruiters can manage only their own jobs.
-- Recruiters can update only applications for their own job postings.
-- Candidates can manage only their own profiles.
-- Candidates can apply only once for a job.
+- Only candidates can create and update candidate profiles.
+- Only candidates can apply for jobs.
+- Only recruiters can create, update, and delete jobs.
+- Recruiters can manage only their own jobs and applicants.
 
----
+## Application Status Values
 
-## Getting Started
+Applications use these status values:
 
-### Clone the Repository
-
-```bash
-git clone https://github.com/agilan-0110/applicant-tracking-system-backend.git
-
-cd applicant-tracking-system-backend
-```
-
----
-
-### Create a Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate the virtual environment.
-
-Windows
-
-```bash
-venv\Scripts\activate
-```
-
-Linux/macOS
-
-```bash
-source venv/bin/activate
-```
-
----
-
-### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-### Configure PostgreSQL
-
-Create a PostgreSQL database and update your database connection string inside your configuration.
-
-Example:
-
-```
-postgresql://username:password@localhost:5432/ats_db
-```
-
----
-
-### Run the Application
-
-```bash
-uvicorn app.main:app --reload
-```
-
-The API will be available at:
-
-```
-http://127.0.0.1:8000
-```
-
-Interactive API Documentation:
-
-```
-http://127.0.0.1:8000/docs
-```
-
-Alternative ReDoc Documentation:
-
-```
-http://127.0.0.1:8000/redoc
-```
-
----
-
-## Security Features
-
-- JWT Authentication
-- Password Hashing
-- Protected Endpoints
-- Role-Based Authorization
-- Duplicate Application Prevention
-- Ownership Validation for Recruiters
-
----
+- `Applied`
+- `Shortlisted`
+- `Interview`
+- `Rejected`
+- `Hired`
 
 ## Future Enhancements
 
-- Resume Upload
-- Resume Parsing
-- AI-Based Candidate Ranking
-- Job Search and Filtering
-- Email Notifications
+- Resume upload
+- Resume parsing
+- Candidate ranking
+- Job search and filtering
+- Email notifications
 - Pagination
-- Docker Support
-- Alembic Database Migrations
-- Unit and Integration Testing
-- Cloud Deployment
-
----
-
-## Author
-
-**Agilan T**
-
-Artificial Intelligence and Data Science Student
-
-- GitHub: https://github.com/agilan-0110
-- LinkedIn: https://www.linkedin.com/in/agilanthiyagarajan
+- Cloud deployment

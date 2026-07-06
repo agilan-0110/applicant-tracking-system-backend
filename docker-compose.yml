@@ -1,0 +1,41 @@
+services:
+  api:
+    build: .
+    container_name: ats-api
+    restart: always
+
+    env_file:
+      - .env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    ports:
+      - "8000:8000"
+    
+    volumes:
+      - .:/app
+
+
+  postgres:
+    image: postgres:17
+    container_name: ats-postgres
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ats_db
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ats_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:

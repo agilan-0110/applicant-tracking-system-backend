@@ -1,0 +1,1 @@
+"""ATS FastAPI application package."""

@@ -52,7 +52,7 @@ def upgrade() -> None:
     sa.Column('location', sa.String(), nullable=True),
     sa.Column('min_salary', sa.Integer(), nullable=True),
     sa.Column('max_salary', sa.Integer(), nullable=True),
-    sa.Column('status', sa.String(), nullable=True),
+    sa.Column('status', sa.String(), server_default='Applied', nullable=True),
     sa.Column('recruiter_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.ForeignKeyConstraint(['recruiter_id'], ['users.id'], ),
