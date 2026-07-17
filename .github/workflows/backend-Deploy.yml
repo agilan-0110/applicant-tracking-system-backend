@@ -4,6 +4,19 @@ on: [push,pull_request]
 
 jobs:
   test:
+    environment: 
+      name : testing
+
+    env:
+      DATABASE_HOSTNAME: ${{DATABASE_HOSTNAME}}
+      DATABASE_PORT: ${{DATABASE_PORT}}
+      DATABASE_NAME: ${{DATABASE_NAME}}
+      DATABASE_USERNAME: ${{DATABASE_USERNAME}}
+      DATABASE_PASSWORD: ${{DATABASE_PASSWORD}}
+      ALGORITHM : ${{ALGORITHM}}
+      ACCESS_TOKEN_EXPIRE_MINUTES : ${{ACCESS_TOKEN_EXPIRE_MINUTES}}
+      SECRET_KEY : ${{SECRET_KEY}}
+
     runs-on: ubuntu-latest
     steps:
       - name: Pulling code
@@ -22,3 +35,5 @@ jobs:
 
       - name: Run tests using pytest
         run: pytest
+
+      
