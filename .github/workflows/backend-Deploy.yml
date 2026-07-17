@@ -8,14 +8,14 @@ jobs:
       name : testing
 
     env:
-      DATABASE_HOSTNAME: ${{vars.DATABASE_HOSTNAME}}
-      DATABASE_PORT: ${{vars.DATABASE_PORT}}
-      DATABASE_NAME: ${{vars.DATABASE_NAME}}
-      DATABASE_USERNAME: ${{vars.DATABASE_USERNAME}}
-      DATABASE_PASSWORD: ${{vars.DATABASE_PASSWORD}}
-      ALGORITHM : ${{vars.ALGORITHM}}
-      ACCESS_TOKEN_EXPIRE_MINUTES : ${{vars.ACCESS_TOKEN_EXPIRE_MINUTES}}
-      SECRET_KEY : ${{vars.SECRET_KEY}}
+      DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      ALGORITHM : ${{secrets.ALGORITHM}}
+      ACCESS_TOKEN_EXPIRE_MINUTES : ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+      SECRET_KEY : ${{secrets.SECRET_KEY}}
 
     runs-on: ubuntu-latest
     steps:
