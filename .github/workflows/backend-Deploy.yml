@@ -50,5 +50,6 @@ jobs:
 
       - name: Run tests using pytest
         run: pytest
-
+      - name: Run Alembic Migrations
+        run: alembic upgrade head
       
