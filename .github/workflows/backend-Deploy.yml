@@ -1,0 +1,12 @@
+name: ATS CI
+on: [push,pull_request]
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: First step
+      uses: actions/checkout@v2
+    - name: Second step
+      run: echo "Hello World"
