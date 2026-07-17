@@ -21,7 +21,7 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          
+          POSTGRES_USER: ${{vars.DATABASE_USERNAME}}
           POSTGRES_PASSWORD: ${{vars.DATABASE_PASSWORD}}
           POSTGRES_DB: ${{vars.POSTGRES_DB}}
         ports:
@@ -50,6 +50,9 @@ jobs:
 
       - name: Run tests using pytest
         run: pytest
-      - name: Run Alembic Migrations
+      - name: Alembic migrations
         run: alembic upgrade head
+      
+      - name: Run tests using pytest
+        run: pytest
       
